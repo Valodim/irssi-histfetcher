@@ -3,6 +3,6 @@ execute a script on the bouncer server via ssh, which will tail the latest log
 file of the queried person.
 
 The script is assuming a passwordless access (like, via pubkey from an agent)
-to the server, where the histfetcher script is in the home and +x, and it can
-read the log_${servertag}/${username}_YYYYMMDD.log
+to the server, where the histfetcher zsh script is in the home and +x, and it
+can read the log_${servertag}/${username}_YYYYMMDD.log
 Any of that a problem, rewrite the scripts :)
