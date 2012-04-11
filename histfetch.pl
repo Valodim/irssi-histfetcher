@@ -3,22 +3,25 @@
 use strict;
 
 use vars qw($VERSION %IRSSI);
-$VERSION = '2011121001';
+$VERSION = '2010082501';
 %IRSSI = (
     authors     => 'Valodim',
     contact     => 'valodim@mugenguild.com',
-    name        => 'histfetch',
-    description => 'requests a backlog from the bnc server on query window',
+    name        => 'ZNCQueryResume',
+    description => 'requests a backlog from the bouncer on query window',
     license     => 'GPLv2',
+    modules     => 'Date::Format File::Glob',
     changed     => $VERSION,
 );  
 
 use Irssi 20020324;
+use Date::Format;
+use File::Glob ':glob';
 
 sub sig_window_item_new ($$) {
     my ($win, $witem) = @_;
 
-    return unless (ref $witem && $witem->{type} eq 'QUERY');
+    return unless (ref $witem && $witem->{type} eq 'QUERY' && $witem->{data_level} eq 0);
 
     my $name = lc $witem->{name};
 
@@ -46,7 +49,7 @@ sub sig_window_item_new ($$) {
 
     } else { # child
 
-        my $msgs = `ssh -o ConnectTimeout=2 $witem->{server}->{address} ./histfetcher $witem->{server}->{tag} $name 2>&1`;
+        my $msgs = `ssh -o BatchMode=yes -o ConnectTimeout=2 $witem->{server}->{address} ./histfetcher $witem->{server}->{tag} $name 2>&1`;
 
         print $write_handle $msgs;
         print $write_handle "__DONE__";
