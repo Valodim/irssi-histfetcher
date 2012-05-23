@@ -3,10 +3,14 @@
 # f=( log_${~1}/(user_|)${~2}_*(Non[-1]) )
 f=( log_${1}/${2}_*(Non[-2,$]) )
 if [[ -n $f ]]; then
-    if (( $#f >= 2 )) && (( $(wc -l < $f[2]) < 5 )); then
-        echo -n "Conversation on "
-        stat -c '%y' $f[1] | cut -d' ' -f1
-        tail $f[1]
+    # two or more files?
+    if (( $#f >= 2 )); then
+        # output the earlier one if the later one is short
+        if (( $(wc -l < $f[2]) < 5 )); then
+            echo -n "Earlier conversation on "
+            stat -c '%y' $f[1] | cut -d' ' -f1
+            tail $f[1]
+        fi
         shift f
     fi
     echo -n "Conversation on "
